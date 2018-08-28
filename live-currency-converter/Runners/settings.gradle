@@ -1,0 +1,4 @@
+rootProject.name = 'Runner'
+
+include ":LiveCurrencyConverter"
+project(":LiveCurrencyConverter").projectDir = file("../LiveCurrencyConverter")

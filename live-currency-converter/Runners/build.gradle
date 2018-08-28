@@ -1,0 +1,33 @@
+group 'io.testproject'
+version '1.0'
+
+apply plugin: 'java'
+
+// If necessary, update the location of TestProject SDK JAR file
+def TP_SDK = 'io.testproject.sdk.java.jar'
+
+
+compileJava.options.encoding = 'UTF-8'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+// Configurations
+configurations {
+    tpsdk
+    compile.extendsFrom tpsdk
+}
+
+dependencies {
+    tpsdk files("${TP_SDK}")
+    compile project(":LiveCurrencyConverter")
+}
+
+task('runAction', dependsOn: 'classes', type: JavaExec, group: 'debug') {
+    assert file("${TP_SDK}").exists() : "TestProject SDK JAR file was not found, please update the TP_SDK variable"
+    main = 'runner.ActionRunner'
+    classpath = sourceSets.main.runtimeClasspath
+}
