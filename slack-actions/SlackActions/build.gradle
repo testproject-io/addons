@@ -1,0 +1,53 @@
+group 'io.testproject'
+version '1.0'
+
+apply plugin: 'java'
+
+// If necessary, update the location of TestProject SDK JAR file
+def TP_SDK = 'io.testproject.sdk.java.jar'
+
+compileJava.options.encoding = 'UTF-8'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+// Configurations
+configurations {
+    tpsdk
+    compile.extendsFrom tpsdk
+}
+
+// JAR Task
+jar {
+    assert file("${TP_SDK}").exists() : "TestProject SDK JAR file was not found, please update the TP_SDK variable"
+    archiveName "${rootProject.name}-${version}.jar"
+    dependsOn configurations.runtime
+    from {
+        // Removes TestProject SDK from the final jar file
+        (configurations.runtime - configurations.tpsdk).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    // Extract SDK version
+    from {
+        (configurations.tpsdk).collect {
+            zipTree(it).matching {
+                include 'testproject-sdk.properties'
+            }
+        }
+    }
+
+}
+
+dependencies {
+
+    tpsdk files("${TP_SDK}")
+
+    // https://mvnrepository.com/artifact/com.android.tools.ddms/ddmlib
+    compile group: 'com.android.tools.ddms', name: 'ddmlib', version: '25.3.0'
+
+}
