@@ -1,0 +1,4 @@
+rootProject.name = 'Runner'
+
+include ":AndroidPermissionsManager"
+project(":AndroidPermissionsManager").projectDir = new File("../AndroidPermissionsManager")
