@@ -1,5 +1,6 @@
 # TestProject Addon - Android Permissions Manager
-Provides actions to grant or revoke Android permissions for the application under test
+Provides actions to grant or revoke Android permissions for the application under test.
+
 A list of all existing permissions can be found [here](https://developer.android
 .com/reference/android/Manifest.permission).
 
