@@ -31,7 +31,7 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
  * @author TestProject LTD.
  * @version 1.0
  */
-@Action(name = "HTTP DELETE Request", description = "DELETE {{uri}}?{{queryParameters}}")
+@Action(name = "HTTP DELETE Request", description = "DELETE {{uri}}?{{query}}")
 public class DeleteAction implements WebAction {
 
     @ActionParameter(description = "Endpoint URL")

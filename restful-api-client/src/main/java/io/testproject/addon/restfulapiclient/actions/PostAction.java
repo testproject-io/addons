@@ -31,7 +31,7 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
  * @author TestProject LTD.
  * @version 1.0
  */
-@Action(name = "HTTP POST Request", description = "POST {{uri}}?{{queryParameters}}")
+@Action(name = "HTTP POST Request", description = "POST {{uri}}?{{query}}")
 public class PostAction implements WebAction {
 
     @ActionParameter(description = "Endpoint URL")

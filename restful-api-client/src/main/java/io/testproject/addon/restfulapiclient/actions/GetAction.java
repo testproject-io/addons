@@ -31,7 +31,7 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
  * @author TestProject LTD.
  * @version 1.0
  */
-@Action(name = "HTTP GET Request", description = "GET {{uri}}?{{queryParameters}}")
+@Action(name = "HTTP GET Request", description = "GET {{uri}}?{{query}}")
 public class GetAction implements WebAction {
 
     @ActionParameter(description = "Endpoint URL")
