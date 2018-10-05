@@ -73,6 +73,7 @@ modules.xml
 
 # TestProject
 logs
+manifest.json
 
 # Gradle
 **/gradle/**
