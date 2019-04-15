@@ -44,10 +44,11 @@ jar {
 }
 
 dependencies {
-
     tpsdk files("${TP_SDK}")
 
-    // https://mvnrepository.com/artifact/com.android.tools.ddms/ddmlib
-    compile group: 'com.android.tools.ddms', name: 'ddmlib', version: '25.3.0'
-
+    // JUnit 5
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntime 'org.junit.platform:junit-platform-runner:1.3.1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testRuntime 'org.junit.vintage:junit-vintage-engine:5.3.1'
 }

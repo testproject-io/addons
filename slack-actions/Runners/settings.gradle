@@ -1,4 +1,0 @@
-rootProject.name = 'Runner'
-
-include ":SlackActions"
-project(":SlackActions").projectDir = file("../SlackActions")
