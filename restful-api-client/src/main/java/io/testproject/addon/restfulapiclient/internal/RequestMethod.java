@@ -24,5 +24,5 @@ package io.testproject.addon.restfulapiclient.internal;
  * @version 1.0
  */
 public enum RequestMethod {
-    GET, POST, PUT, DELETE
+    GET, POST, PUT, DELETE, PATCH
 }

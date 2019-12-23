@@ -15,12 +15,7 @@
  * limitations under the License.
  */
 
-import io.testproject.addon.restfulapiclient.actions.DeleteAction;
-import io.testproject.addon.restfulapiclient.actions.GetAction;
-import io.testproject.addon.restfulapiclient.actions.PostAction;
-import io.testproject.addon.restfulapiclient.actions.PutAction;
-import io.testproject.java.classes.DriverSettings;
-import io.testproject.java.enums.DriverType;
+import io.testproject.addon.restfulapiclient.actions.*;
 import net.minidev.json.JSONValue;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,7 +33,7 @@ public class Actions {
 
     @BeforeAll
     public static void setup() throws InstantiationException, MalformedURLException {
-        runner = new Runner(System.getenv("DEV_TOKEN"), new DriverSettings(DriverType.Chrome));
+        runner = Runner.create(System.getenv("YOUR_DEV_TOKEN"));
     }
 
     @Test
@@ -68,6 +63,25 @@ public class Actions {
         postAction.body = JSONValue.toJSONString(body);
 
         runner.run(postAction);
+    }
+
+    @Test
+    public void runPatchAction() throws Exception {
+        PatchAction patchAction = new PatchAction();
+
+        patchAction.uri = "https://jsonplaceholder.typicode.com/posts/1";
+        patchAction.headers = "Authorization=YOUR_API_TOKEN";
+
+        Map<String,Object> body = new HashMap<>();
+
+        body.put("userId",1);
+        body.put("id",1);
+        body.put("title","Post title");
+        body.put("email","Post body");
+
+        patchAction.body = JSONValue.toJSONString(body);
+
+        runner.run(patchAction);
     }
 
     @Test

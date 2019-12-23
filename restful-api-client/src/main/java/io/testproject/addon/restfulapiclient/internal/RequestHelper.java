@@ -21,14 +21,16 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 import org.apache.http.client.utils.URIBuilder;
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
+import javax.net.ssl.*;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -53,20 +55,28 @@ public class RequestHelper {
 
     private String jsonPath;
 
+    private boolean ignoreUntrustedCertificate;
 
     private Invocation.Builder request;
 
     /**
      * The constructor
      *
-     * @param requestType     - The type of the request
-     * @param uri             - The uri
-     * @param queryParameters - queryParameters of the request (optional, can be null)
-     * @param headers         - headers of the request (optional, can be null)
-     * @param body            - body of the request (optional, can be null)
-     * @param bodyFormat      - The type of the body (optional, can be null)
+     * @param requestType                   - The type of the request
+     * @param uri                           - The uri
+     * @param queryParameters               - queryParameters of the request (optional, can be null)
+     * @param headers                       - headers of the request (optional, can be null)
+     * @param body                          - body of the request (optional, can be null)
+     * @param bodyFormat                    - The type of the body (optional, can be null)
+     * @param ignoreUntrustedCertificate    - Ignore untrusted SSL certificate (optional, can be null)
      */
-    public RequestHelper(RequestMethod requestType, String uri, String queryParameters, String headers, String body, String bodyFormat, String jsonPath) {
+    public RequestHelper(
+            RequestMethod requestType, 
+            String uri, String queryParameters, 
+            String headers, String body, 
+            String bodyFormat, String 
+            jsonPath, 
+            boolean ignoreUntrustedCertificate) {
         this.requestMethod = requestType;
         this.uri = uri;
         this.queryParameters = queryParameters;
@@ -74,6 +84,7 @@ public class RequestHelper {
         this.body = body;
         this.bodyFormat = bodyFormat;
         this.jsonPath = jsonPath;
+        this.ignoreUntrustedCertificate = ignoreUntrustedCertificate;
     }
 
     /**
@@ -84,7 +95,39 @@ public class RequestHelper {
      */
     private void initializeRequest() throws FailureException {
 
-        Client client = ClientBuilder.newClient();
+        Client client = null;
+
+        if (ignoreUntrustedCertificate) {
+            try {
+                TrustManager[] trustManager = new X509TrustManager[]{new X509TrustManager() {
+
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }};
+
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, trustManager, null);
+
+                client = ClientBuilder.newBuilder().sslContext(sslContext).build();
+            } catch (NoSuchAlgorithmException | KeyManagementException e){
+                throw new FailureException("Failed to prepare a request client with custom SSL settings", e);
+            }
+        } else {
+            client = ClientBuilder.newClient();
+        }
+
+        // Following must be set to allow PATCH requests with Jersey
+        if (requestMethod == RequestMethod.PATCH) {
+            client.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
+        }
 
         // Setup the uri and the query parameters for the request
         URIBuilder uriBuilder;
@@ -144,7 +187,7 @@ public class RequestHelper {
      * @return ServerResponse object
      * @throws FailureException - Unable to send the request
      */
-    public ServerResponse sendRequest() throws FailureException {
+    public ServerResponse sendRequest() throws FailureException{
 
         initializeRequest();
 
@@ -167,9 +210,11 @@ public class RequestHelper {
                 case DELETE:
                     response = request.delete();
                     break;
+                case PATCH:
+                    response = request.method("PATCH", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
             }
         } catch (ProcessingException e) {
-            throw new FailureException("Failed to send the request due to error.",e);
+            throw new FailureException("Failed to send the request due to an error", e);
         }
 
         ServerResponse sr = new ServerResponse();

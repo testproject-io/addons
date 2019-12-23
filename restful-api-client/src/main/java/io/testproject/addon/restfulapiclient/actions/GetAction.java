@@ -16,12 +16,11 @@
  */
 package io.testproject.addon.restfulapiclient.actions;
 
+import io.testproject.addon.restfulapiclient.actions.base.BaseAction;
 import io.testproject.addon.restfulapiclient.internal.*;
 import io.testproject.java.annotations.v2.Action;
-import io.testproject.java.annotations.v2.ActionParameter;
-import io.testproject.java.enums.ParameterDirection;
-import io.testproject.java.sdk.v2.addons.WebAction;
-import io.testproject.java.sdk.v2.addons.helpers.WebAddonHelper;
+import io.testproject.java.sdk.v2.addons.GenericAction;
+import io.testproject.java.sdk.v2.addons.helpers.AddonHelper;
 import io.testproject.java.sdk.v2.enums.ExecutionResult;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 
@@ -29,47 +28,10 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
  * This actions sends GET request
  *
  * @author TestProject LTD.
- * @version 1.0
  */
 @Action(name = "HTTP GET Request", description = "GET {{uri}}?{{query}}")
-public class GetAction implements WebAction {
-
-    @ActionParameter(description = "Endpoint URL")
-    public String uri = "";
-
-    @ActionParameter(description = "Query parameters (e.g. abc=123&efg=456)")
-    public String query = "";
-
-    @ActionParameter(description = "Request headers (e.g. h1=v1,h2=v2")
-    public String headers = "";
-
-    @ActionParameter(description = "Expected response code")
-    public String expectedStatus = "";
-
-    @ActionParameter(description = "Jayway JsonPath (e.g. '$.key', see docs for more info)")
-    public String jsonPath = "";
-
-    @ActionParameter(description = "Server response body or value found using jsonPath specified", direction = ParameterDirection.OUTPUT)
-    public String response = "";
-
-    @ActionParameter(description = "Server response status code", direction = ParameterDirection.OUTPUT)
-    public int status = 0;
-
-    public ExecutionResult execute(WebAddonHelper helper) throws FailureException {
-        // Validate input fields. In case that one of the fields is invalid, throw FailureException
-        InputValidator.validateInputsFields(uri, query, headers, expectedStatus);
-
-        // Create a request helper, with the desired settings
-        RequestHelper requestHelper = new RequestHelper(RequestMethod.GET, uri, query, headers, null, null, jsonPath);
-
-        // Send the request and receive a response
-        ServerResponse serverResponse = requestHelper.sendRequest();
-        status = serverResponse.responseCode;
-
-        // If user provided jsonPath parameter then set response to be the value  found by evaluating jsonPath
-        response = (jsonPath.isEmpty()) ? serverResponse.responseBody : serverResponse.jsonParseResult;
-
-        // Examine the result of the action and report it
-        return ReporterHelper.reportResult(helper.getReporter(), serverResponse, expectedStatus, jsonPath);
+public class GetAction extends BaseAction implements GenericAction {
+    public ExecutionResult execute(AddonHelper helper) throws FailureException {
+        return baseExecute(helper, RequestMethod.GET, null, null);
     }
 }

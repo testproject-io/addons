@@ -26,12 +26,12 @@ import io.testproject.java.sdk.v2.enums.ExecutionResult;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 
 /**
- * This actions sends POST request
+ * This actions sends PATCH request
  *
  * @author TestProject LTD.
  */
-@Action(name = "HTTP POST Request", description = "POST {{uri}}?{{query}}")
-public class PostAction extends BaseAction implements GenericAction {
+@Action(name = "HTTP PATCH Request", description = "PATCH {{uri}}?{{query}}")
+public class PatchAction extends BaseAction implements GenericAction {
 
     @Parameter(description = "Request body")
     public String body = "";
@@ -40,7 +40,6 @@ public class PostAction extends BaseAction implements GenericAction {
     public String format = "";
 
     public ExecutionResult execute(AddonHelper helper) throws FailureException {
-        return baseExecute(helper, RequestMethod.POST, body, format);
+        return baseExecute(helper, RequestMethod.PATCH, body, format);
     }
 }
-

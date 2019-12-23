@@ -10,20 +10,21 @@ There are 4 actions in this Addon:
 * HTTP POST Request
 * HTTP PUT Request
 * HTTP DELETE Request
+* HTTP PATCH Request
 
 ### Fields
 
-| Field/Action   | Required | Input/Output | GET | POST | PUT | DELETE |
-|----------------|----------|--------------|-----|------|-----|--------|
-| uri            | X        | INPUT        | X   | X    | X   | X      |
-| query          |          | INPUT        | X   | X    | X   | X      |
-| headers        |          | INPUT        | X   | X    | X   | X      |
-| body           |          | INPUT        |     | X    | X   |        |
-| format         |          | INPUT        |     | X    | X   |        |
-| jsonPath       |          | INPUT        | X   | X    | X   | X      |
-| expectedStatus |          | INPUT        | X   | X    | X   | X      |
-| response       |          | OUTPUT       | X   | X    | X   | X      |
-| status         |          | OUTPUT       | X   | X    | X   | X      |
+| Field/Action   | Required | Input/Output | GET | POST | PUT | DELETE | PATCH |
+|----------------|----------|--------------|-----|------|-----|--------|-------|
+| uri            | X        | INPUT        | X   | X    | X   | X      | X     |
+| query          |          | INPUT        | X   | X    | X   | X      | X     |
+| headers        |          | INPUT        | X   | X    | X   | X      | X     |
+| body           |          | INPUT        |     | X    | X   |        | X     |
+| format         |          | INPUT        |     | X    | X   |        | X     |
+| jsonPath       |          | INPUT        | X   | X    | X   | X      | X     |
+| expectedStatus |          | INPUT        | X   | X    | X   | X      | X     |
+| response       |          | OUTPUT       | X   | X    | X   | X      | X     |
+| status         |          | OUTPUT       | X   | X    | X   | X      | X     |
 
 #### Input Fields
 
@@ -85,6 +86,11 @@ There are 4 actions in this Addon:
     For a specific example, see [_Example 1.2_](#example-1.2:-POST-Request-with-_jsonPath_)
 
     If the value specified is not found or the the response is a non-JSON response, action will fail.
+	
+* `ignoreUntrustedCertificate` - This parameter is used to disable the verification of SSL certificate.
+
+	Parameter is *false* by default.
+	If set to `true`, RESTful client will accept self signed and untrusted SSL certificate presented by the server when sending a request.
 
 #### Output Fields
 
@@ -189,4 +195,4 @@ Apache License 2.0
 
 ## Platform
 
-Web
+Generic
