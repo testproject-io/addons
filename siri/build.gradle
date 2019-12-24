@@ -70,7 +70,7 @@ dependencies {
 
 test {
     outputs.upToDateWhen {false}
-    useJUnit()
+    useJUnitPlatform()
     testLogging {
         exceptionFormat = 'full'
         showStandardStreams = true

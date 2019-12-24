@@ -16,6 +16,10 @@
  */
 package io.testproject.addon.siri;
 
+import com.google.common.collect.ImmutableMap;
+
+import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.IOSElement;
 import io.testproject.java.annotations.v2.Action;
 import io.testproject.java.annotations.v2.Parameter;
 import io.testproject.java.sdk.v2.addons.IOSAction;
@@ -33,6 +37,8 @@ public class SiriAction implements IOSAction {
 
     @Override
     public ExecutionResult execute(IOSAddonHelper helper) throws FailureException {
+        IOSDriver<IOSElement> driver = helper.getDriver();
+        driver.executeScript("mobile: siriCommand", ImmutableMap.of("text", message));
         return ExecutionResult.PASSED;
     }
 
