@@ -70,6 +70,8 @@ modules.xml
 
 # IntelliJidea
 **/.idea/**
+**/.project
+**/.settings
 
 # TestProject
 logs
@@ -79,3 +81,7 @@ manifest.json
 **/gradle/**
 **/.gradle/**
 **/build/**
+
+# Vim/Coc
+**/.vim
+**/.classpath
