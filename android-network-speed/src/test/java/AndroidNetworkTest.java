@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -39,6 +42,8 @@ public class AndroidNetworkTest {
     @Test
     void testNetworkAction() throws Exception {
         AndroidNetworkAction action = new AndroidNetworkAction();
+        By waitEl = By.id("mm-0");
+        WebDriverWait wait = new WebDriverWait(driver, 45);
         // make sure we start at full speed
         action.speed = "FULL";
         runner.run(action);
@@ -50,17 +55,25 @@ public class AndroidNetworkTest {
             }
         }
 
+        long start = System.currentTimeMillis();
         // set up browser
         driver.get("https://testproject.io");
+        wait.until(ExpectedConditions.presenceOfElementLocated(waitEl));
+        long fullSpeedLoadTime = System.currentTimeMillis() - start;
 
         action.speed = "GPRS";
         runner.run(action);
 
         // Verify
+        start = System.currentTimeMillis();
         driver.get("https://testproject.io");
+        wait.until(ExpectedConditions.presenceOfElementLocated(waitEl));
+        long gprsLoadTime = System.currentTimeMillis() - start;
 
         // make sure we end at full speed
         action.speed = "FULL";
         runner.run(action);
+
+        assert(gprsLoadTime > fullSpeedLoadTime);
     }
 }
