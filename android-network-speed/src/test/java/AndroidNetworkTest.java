@@ -46,6 +46,7 @@ public class AndroidNetworkTest {
 
     @AfterAll
     static void tearDown() throws IOException {
+        //System.out.println(driver.getPageSource());
         driver.quit();
         runner.close();
     }
@@ -58,23 +59,12 @@ public class AndroidNetworkTest {
     @Test
     void testNetworkAction() throws Exception {
         AndroidNetworkAction action = new AndroidNetworkAction();
-        By waitEl = By.id("mm-0");
-        WebDriverWait wait = new WebDriverWait(driver, 45);
         // make sure we start at full speed
         action.speed = "FULL";
         runner.run(action);
 
-        for (String ctx : driver.getContextHandles()) {
-            if (ctx != "NATIVE_APP") {
-                driver.context(ctx);
-                break;
-            }
-        }
-
         long start = System.currentTimeMillis();
-        // set up browser
         driver.get("https://testproject.io");
-        wait.until(ExpectedConditions.presenceOfElementLocated(waitEl));
         long fullSpeedLoadTime = System.currentTimeMillis() - start;
 
         action.speed = "GPRS";
@@ -83,7 +73,6 @@ public class AndroidNetworkTest {
         // Verify
         start = System.currentTimeMillis();
         driver.get("https://testproject.io");
-        wait.until(ExpectedConditions.presenceOfElementLocated(waitEl));
         long gprsLoadTime = System.currentTimeMillis() - start;
 
         // make sure we end at full speed
