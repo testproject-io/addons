@@ -28,11 +28,13 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
 
 @Action(name = "Set Network Speed",
         description = "Set the Android emulators perceived network speed",
-        summary = "Sets the synthetic network speed for an Android emulator to match one of a variety of pre-set network speeds")
+        summary = "Sets the synthetic network speed for an Android emulator to match " +
+                  "one of a variety of pre-set network speeds")
 public class AndroidNetworkAction implements AndroidAction {
 
-    @Parameter(description = "The network speed to adopt. Must be one of the following values: GSM, SCSD, GPRS, EDGE, UMTS, HSDPA, LTE, EVDO, FULL")
-    public String speed = "LTE";
+    @Parameter(description = "The network speed to adopt. Must be one of the following " +
+                             "values: GSM, SCSD, GPRS, EDGE, UMTS, HSDPA, LTE, EVDO, FULL")
+    public String speed = "";
 
     @Override
     public ExecutionResult execute(AndroidAddonHelper helper) throws FailureException {
@@ -40,5 +42,4 @@ public class AndroidNetworkAction implements AndroidAction {
         driver.setNetworkSpeed(NetworkSpeed.valueOf(speed));
         return ExecutionResult.PASSED;
     }
-
 }
