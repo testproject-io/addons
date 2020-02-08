@@ -16,20 +16,21 @@
  */
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.ios.IOSElement;
+import io.testproject.addon.ios_gestures.PinchZoomAction;
+import io.testproject.addon.ios_gestures.ScrollAction;
 import io.testproject.addon.ios_gestures.SwipeAction;
 import io.testproject.java.sdk.v2.Runner;
 import io.testproject.java.sdk.v2.drivers.IOSDriver;
 
-public class SwipeActionTest {
+public class GesturesActionsTest {
     private static final String DEV_TOKEN = System.getenv("TESTPROJECT_DEV_KEY");
     private static final String DEVICE_UDID = System.getenv("IOS_DEVICE_ID");
     private static final String DEVICE_NAME = System.getenv("IOS_DEVICE_NAME");
@@ -37,32 +38,51 @@ public class SwipeActionTest {
 
     private static Runner runner;
     private static IOSDriver<IOSElement> driver;
+    private static WebDriverWait wait;
 
-    @BeforeAll
-    static void setup() throws InstantiationException {
+    @BeforeEach
+    void setup() throws InstantiationException {
         runner = Runner.createIOS(DEV_TOKEN, DEVICE_UDID, DEVICE_NAME, BUNDLE_ID);
         driver = runner.getDriver();
+        wait = new WebDriverWait(driver, 10);
     }
 
-    @AfterAll
-    static void tearDown() throws IOException {
+    @AfterEach
+    void tearDown() throws IOException {
         driver.quit();
         runner.close();
     }
 
-    @Before
-    void prepareApp() {
-        driver.resetApp();
-    }
-
     @Test
     void testSwipeAction() throws Exception {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("List Demo"))).click();
 
         // Create Action
         SwipeAction action = new SwipeAction();
         action.direction = "down";
+
+        // Run action
+        runner.run(action);
+    }
+
+    @Test
+    void testScrollAction() throws Exception {
+        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("List Demo"))).click();
+
+        // Create Action
+        ScrollAction action = new ScrollAction();
+        action.direction = "up";
+
+        // Run action
+        runner.run(action);
+    }
+
+    @Test
+    void testPinchAction() throws Exception {
+        // Create Action
+        PinchZoomAction action = new PinchZoomAction();
+        action.scale = 0.5;
+        action.velocity = 1.0;
 
         // Run action
         runner.run(action);
