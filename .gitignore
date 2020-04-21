@@ -85,3 +85,4 @@ manifest.json
 # Vim/Coc
 **/.vim
 **/.classpath
+TestProject_*.jar
