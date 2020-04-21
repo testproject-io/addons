@@ -41,6 +41,9 @@ public class PinchZoomAction implements IOSAction {
     @Override
     public ExecutionResult execute(IOSAddonHelper helper) throws FailureException {
         IOSDriver<IOSElement> driver = helper.getDriver();
+        if (scale < 1 && velocity > 0) {
+            velocity = velocity * -1;
+        }
         driver.executeScript("mobile: pinch", ImmutableMap.of("scale", scale, "velocity", velocity));
         return ExecutionResult.PASSED;
     }

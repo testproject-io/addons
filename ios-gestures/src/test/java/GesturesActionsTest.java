@@ -90,10 +90,17 @@ public class GesturesActionsTest {
 
     @Test
     void testPinchAction() throws Exception {
+        driver.navigate().back();
+        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Webview Demo"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("urlInput"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("urlInput"))).sendKeys("https://appiumpro.com");
+        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("navigateBtn"))).click();
+        Thread.sleep(2000);
+
         // Create Action
         PinchZoomAction action = new PinchZoomAction();
-        action.scale = 0.5;
-        action.velocity = -1.0;
+        action.scale = 3.0;
+        action.velocity = 1.0;
 
         // Run action
         runner.run(action);
