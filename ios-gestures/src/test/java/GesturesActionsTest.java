@@ -49,7 +49,6 @@ public class GesturesActionsTest {
 
     @AfterEach
     void tearDown() throws IOException {
-        driver.quit();
         runner.close();
     }
 
