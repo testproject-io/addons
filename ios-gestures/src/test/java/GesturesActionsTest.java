@@ -16,9 +16,12 @@
  */
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -40,33 +43,39 @@ public class GesturesActionsTest {
     private static IOSDriver<IOSElement> driver;
     private static WebDriverWait wait;
 
-    @BeforeEach
-    void setup() throws InstantiationException {
+    @BeforeAll
+    static void setup() throws InstantiationException {
         runner = Runner.createIOS(DEV_TOKEN, DEVICE_UDID, DEVICE_NAME, BUNDLE_ID);
         driver = runner.getDriver();
         wait = new WebDriverWait(driver, 10);
     }
 
-    @AfterEach
-    void tearDown() throws IOException {
+    @AfterAll
+    static void tearDown() throws IOException {
+        driver.quit();
         runner.close();
     }
 
     @Test
     void testSwipeAction() throws Exception {
         wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("List Demo"))).click();
+        WebElement stratus = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Stratus")));
+        Rectangle stratusRect = stratus.getRect();
 
         // Create Action
         SwipeAction action = new SwipeAction();
-        action.direction = "down";
-
+        action.direction = "up";
         // Run action
         runner.run(action);
+
+        Rectangle newStratusRect = stratus.getRect();
+        Assertions.assertNotEquals(stratusRect.y, newStratusRect.y);
     }
 
     @Test
     void testScrollAction() throws Exception {
-        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("List Demo"))).click();
+        WebElement stratus = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Stratus")));
+        Rectangle stratusRect = stratus.getRect();
 
         // Create Action
         ScrollAction action = new ScrollAction();
@@ -74,6 +83,9 @@ public class GesturesActionsTest {
 
         // Run action
         runner.run(action);
+
+        Rectangle newStratusRect = stratus.getRect();
+        Assertions.assertNotEquals(stratusRect.y, newStratusRect.y);
     }
 
     @Test
@@ -81,7 +93,7 @@ public class GesturesActionsTest {
         // Create Action
         PinchZoomAction action = new PinchZoomAction();
         action.scale = 0.5;
-        action.velocity = 1.0;
+        action.velocity = -1.0;
 
         // Run action
         runner.run(action);
