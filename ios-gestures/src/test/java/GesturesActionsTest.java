@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 TestProject LTD. and/or its affiliates
+ * Copyright 2020 TestProject LTD. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 TestProject LTD. and/or its affiliates
+ * Copyright 2020 TestProject LTD. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,6 +41,14 @@ public class PinchZoomAction implements IOSAction {
     @Override
     public ExecutionResult execute(IOSAddonHelper helper) throws FailureException {
         IOSDriver<IOSElement> driver = helper.getDriver();
+
+        if (scale <= 0) {
+            throw new Error("Scale must be greater than 0");
+        }
+
+        // if scale is between 0 and 1, that means we have a pinch, and Appium requires velocity
+        // values to be negative, not positive. If the user sent in a positive value, they probably
+        // didn't know this and don't care about Appium's requirement, so change it for them.
         if (scale < 1 && velocity > 0) {
             velocity = velocity * -1;
         }

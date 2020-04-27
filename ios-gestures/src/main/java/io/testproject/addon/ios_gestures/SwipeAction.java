@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 TestProject LTD. and/or its affiliates
+ * Copyright 2020 TestProject LTD. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,7 @@ public class SwipeAction implements IOSAction {
     @Override
     public ExecutionResult execute(IOSAddonHelper helper) throws FailureException {
         IOSDriver<IOSElement> driver = helper.getDriver();
+        direction = direction.toLowerCase();
         driver.executeScript("mobile: swipe", ImmutableMap.of("direction", direction));
         return ExecutionResult.PASSED;
     }

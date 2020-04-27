@@ -1,9 +1,9 @@
-# TestProject Addon - Siri
+# TestProject Addon - iOS Gesture Toolkit
 
-This Addon provides an action that sends a message to Siri emulating user voice input
+This Addon provides various iOS-specific gesture actions.
 
 ## Author
-TestProject LTD. 2019
+TestProject LTD. 2020
 
 ## License
 Apache License 2.0
