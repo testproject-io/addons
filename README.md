@@ -5,6 +5,33 @@ To get familiar with the TestProject, visit our main [documentation](https://doc
 
 This document describes the bare minimum steps to start developing **addons** using the Java SDK.
 
+# Addons
+
+Automation building blocks empowering your tests. 
+
+An [Addon](https://addons.testproject.io/) is a collection of actions you can use within any [recorded test](https://testproject.io/smart-test-recorder/) to extend the recorder’s capabilities. \
+Addons can be element based or non-UI based:
+
+* Element based Addons provide extended functionalities on customized UI elements.
+* Non-UI based Addons combine steps within your recorded tests, such as: File operations, REST API commands, image comparison, etc. 
+
+There are hundreds of Addons to choose from, or you can build your own. 
+
+Addons are developed in Java and uploaded to the user’s account in a collaborative library. \
+Once uploaded, all team members in the account can use the Addons as part of their tests.
+
+TestProject’s Agent automatically distributes Addons based on the account member’s usage. \
+You can update new versions for Addons, and add more actions or change their functionality according to your needs (All tests using the newly versioned Addon will be updated as well).
+
+There are two types of Addons: 
+
+1. **Community Addons**: Community Addons are shared by the entire TestProject community and give you the power to effortlessly extend your tests while saving valuable time. 
+    * The usage of community addon is identical to account addons: Once the community-based action is selected within the [Smart Test Recorder](https://testproject.io/smart-test-recorder/), the Addon is automatically downloaded and installed to the account. 
+    * Before being shared with the entire community, the TestProject team reviews the code and approves the Addon for public usage.
+2.	**Account Private Addons**: Account Addons are private and only accessible to account team members. These Addons do not need to be approved by TestProject before the upload/usage.
+
+
+
 # Getting Started
 
 To get started, you need to complete the following prerequisites checklist:
