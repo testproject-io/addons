@@ -33,6 +33,7 @@ import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import javax.net.ssl.*;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.*;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -40,6 +41,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -251,6 +253,7 @@ public class RequestHelper {
 
         sr.responseBody = response.readEntity(String.class);
         sr.responseCode = response.getStatus();
+        sr.responseHeaders = buildResponseString(response.getStringHeaders());
 
         if (!Strings.isNullOrEmpty(jsonPath)) {
 
@@ -266,6 +269,19 @@ public class RequestHelper {
         }
 
         return sr;
+    }
+
+    private String buildResponseString(MultivaluedMap<String, String> stringHeaders) {
+        StringBuilder builder = new StringBuilder();
+        stringHeaders.forEach((String key, List<String> list)-> {
+            builder.append(String.format("%s: {", key));
+            for(String value : list){
+                builder.append(String.format("%s, ", value));
+            }
+            builder.setLength(builder.length() - 2);
+            builder.append("} ");
+        });
+        return builder.toString();
     }
 
 
