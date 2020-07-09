@@ -19,6 +19,9 @@ package io.testproject.addon.restfulapiclient.internal;
 import com.google.common.base.Strings;
 import com.google.gson.GsonBuilder;
 import com.jayway.jsonpath.Configuration;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.Option;
@@ -272,17 +275,7 @@ public class RequestHelper {
     }
 
     private String buildResponseString(MultivaluedMap<String, String> stringHeaders) {
-        StringBuilder builder = new StringBuilder();
-        stringHeaders.forEach((String key, List<String> list)-> {
-            builder.append(String.format("%s: {", key));
-            for(String value : list){
-                builder.append(String.format("%s, ", value));
-            }
-            builder.setLength(builder.length() - 2);
-            builder.append("} ");
-        });
-        return builder.toString();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(stringHeaders);
     }
-
-
 }
