@@ -1,6 +1,6 @@
 # TestProject SDK For Addons
 
-[TestProject](https://testproject.io) is a **Free** Test Automation platform for Web and Mobile.\
+[TestProject](https://testproject.io) is a **Free** Test Automation platform for Web, Mobile and API testing. \
 To get familiar with the TestProject, visit our main [documentation](https://docs.testproject.io/) website.
 
 This document describes the bare minimum steps to start developing **addons** using the Java SDK.
