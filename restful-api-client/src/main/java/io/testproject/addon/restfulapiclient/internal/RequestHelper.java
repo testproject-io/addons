@@ -237,7 +237,8 @@ public class RequestHelper {
                     response = request.get();
                     break;
                 case PUT:
-                    response = request.put((Strings.isNullOrEmpty(body)) ? null : Entity.entity(body, bodyFormat));
+                    Entity<?> empty = Entity.text("");
+                    response = request.put((Strings.isNullOrEmpty(body)) ? empty : Entity.entity(body, bodyFormat));
                     break;
                 case POST:
                     response = request.post((Strings.isNullOrEmpty(body)) ? null : Entity.entity(body, bodyFormat));
