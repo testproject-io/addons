@@ -51,6 +51,9 @@ public class BaseAction {
     @Parameter(description = "Ignore untrusted SSL certificate (true/false)")
     public boolean ignoreUntrustedCertificate;
 
+    @Parameter(description = "Response Headers", direction = ParameterDirection.OUTPUT)
+    public String responseHeaders;
+
     protected ExecutionResult baseExecute(AddonHelper helper, RequestMethod requestMethod, String body, String bodyFormat) throws FailureException {
 
         // Validate input fields. In case that one of the fields is invalid, throw FailureException
@@ -65,6 +68,8 @@ public class BaseAction {
 
         // If user provided jsonPath parameter then set response to be the value  found by evaluating jsonPath
         response = (jsonPath.isEmpty()) ? serverResponse.responseBody : serverResponse.jsonParseResult;
+
+        responseHeaders = serverResponse.responseHeaders;
 
         // Examine the result of the action and report it
         return ReporterHelper.reportResult(helper.getReporter(), serverResponse, expectedStatus, jsonPath);

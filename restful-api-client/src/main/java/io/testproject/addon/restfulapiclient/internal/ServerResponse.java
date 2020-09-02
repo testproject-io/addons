@@ -27,6 +27,7 @@ package io.testproject.addon.restfulapiclient.internal;
 public class ServerResponse {
     public String responseBody = "";
     public int responseCode;
+    public String responseHeaders;
 
     public String jsonParseResult = null;
     public String jJsonParseErrorMsg = null;

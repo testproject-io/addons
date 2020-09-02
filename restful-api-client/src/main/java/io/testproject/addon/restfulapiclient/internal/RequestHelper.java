@@ -19,6 +19,9 @@ package io.testproject.addon.restfulapiclient.internal;
 import com.google.common.base.Strings;
 import com.google.gson.GsonBuilder;
 import com.jayway.jsonpath.Configuration;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.Option;
@@ -33,6 +36,7 @@ import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import javax.net.ssl.*;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.*;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -40,6 +44,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -232,7 +237,8 @@ public class RequestHelper {
                     response = request.get();
                     break;
                 case PUT:
-                    response = request.put((Strings.isNullOrEmpty(body)) ? null : Entity.entity(body, bodyFormat));
+                    Entity<?> empty = Entity.text("");
+                    response = request.put((Strings.isNullOrEmpty(body)) ? empty : Entity.entity(body, bodyFormat));
                     break;
                 case POST:
                     response = request.post((Strings.isNullOrEmpty(body)) ? null : Entity.entity(body, bodyFormat));
@@ -251,6 +257,7 @@ public class RequestHelper {
 
         sr.responseBody = response.readEntity(String.class);
         sr.responseCode = response.getStatus();
+        sr.responseHeaders = buildResponseString(response.getStringHeaders());
 
         if (!Strings.isNullOrEmpty(jsonPath)) {
 
@@ -268,5 +275,8 @@ public class RequestHelper {
         return sr;
     }
 
-
+    private String buildResponseString(MultivaluedMap<String, String> stringHeaders) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(stringHeaders);
+    }
 }
