@@ -384,9 +384,9 @@ This allows creating smart crowd based addons for industry common elements and l
 
 *TypeRandomPhone* is an example of an Element Action:
 
-* [Web - Element Action](Web/Addon/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
-* [Android - Element Action](Android/Addon/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
-* [iOS - Element Action](iOS/Addon/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
+* [Web - Element Action](Examples/Web/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
+* [Android - Element Action](Examples/Android/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
+* [iOS - Element Action](Examples/IOS/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
 
 This action generates a random phone number based on provided country code and max digits amount, typing it in a text field:
 
