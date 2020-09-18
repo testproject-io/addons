@@ -48,7 +48,7 @@ public class BaseAction {
     @Parameter(description = "Server response status code", direction = ParameterDirection.OUTPUT)
     public int status = 0;
 
-    @Parameter(description = "Server response status code(As JSON)", direction = ParameterDirection.OUTPUT)
+    @Parameter(description = "Value found using jsonPath specified (As JSON)", direction = ParameterDirection.OUTPUT)
     public String jsonResponse = "";
 
     @Parameter(description = "Ignore untrusted SSL certificate (true/false)")
