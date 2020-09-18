@@ -30,5 +30,6 @@ public class ServerResponse {
     public String responseHeaders;
 
     public String jsonParseResult = null;
+    public String jsonParseResultAsJson = null;
     public String jJsonParseErrorMsg = null;
 }

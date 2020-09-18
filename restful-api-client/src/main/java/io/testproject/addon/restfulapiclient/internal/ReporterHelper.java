@@ -57,6 +57,7 @@ public class ReporterHelper {
         if (!jsonPath.isEmpty()) {
             if (serverResponse.jJsonParseErrorMsg == null) {
                 resultStr.append("The value of \"").append(jsonPath).append("\" is \"").append(serverResponse.jsonParseResult).append("\". ").append(LS);
+                resultStr.append("The value of \"").append(jsonPath).append("\" as JsonObject is \"").append(serverResponse.jsonParseResultAsJson).append("\". ").append(LS);
             } else {
                 resultStr.append("Unable to get the value '").append(jsonPath).append("' due to an error: ").append(serverResponse.jJsonParseErrorMsg).append("\". ").append(LS);
                 executionResult = ExecutionResult.FAILED;
