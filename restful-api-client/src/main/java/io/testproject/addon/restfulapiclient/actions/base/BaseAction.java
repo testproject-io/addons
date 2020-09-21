@@ -17,12 +17,16 @@
 
 package io.testproject.addon.restfulapiclient.actions.base;
 
+import com.google.common.base.Strings;
+import io.testproject.addon.restfulapiclient.actions.ValidateJsonUsingSchema;
 import io.testproject.addon.restfulapiclient.internal.*;
 import io.testproject.java.annotations.v2.Parameter;
 import io.testproject.java.enums.ParameterDirection;
 import io.testproject.java.sdk.v2.addons.helpers.AddonHelper;
 import io.testproject.java.sdk.v2.enums.ExecutionResult;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
+
+import java.nio.file.Paths;
 
 public class BaseAction {
 
@@ -57,6 +61,18 @@ public class BaseAction {
     @Parameter(description = "Response Headers", direction = ParameterDirection.OUTPUT)
     public String responseHeaders;
 
+    @Parameter(description = "The path to the Json Schema")
+    public String schemaPath;
+
+    @Parameter(description = "Create a file for the Schema validation result? (true/false)")
+    public boolean createFile;
+
+    @Parameter(description = "If createFile is true, this will be the output path for the validation result file")
+    public String schemaValidationOutputFilePath;
+
+    @Parameter(description = "Output of the schema validation", direction = ParameterDirection.OUTPUT)
+    public String schemaValidationOutput;
+
     protected ExecutionResult baseExecute(AddonHelper helper, RequestMethod requestMethod, String body, String bodyFormat) throws FailureException {
 
         // Validate input fields. In case that one of the fields is invalid, throw FailureException
@@ -72,6 +88,16 @@ public class BaseAction {
         // If user provided jsonPath parameter then set response to be the value  found by evaluating jsonPath
         response = (jsonPath.isEmpty()) ? serverResponse.responseBody : serverResponse.jsonParseResult;
         jsonResponse = (jsonPath.isEmpty()) ? serverResponse.responseBody : serverResponse.jsonParseResultAsJson;
+
+
+        // If schema file is present , call the validation
+        if(!Strings.isNullOrEmpty(schemaPath))
+            schemaValidationOutput = new ValidateJsonUsingSchema()
+                    .validate(Paths.get(schemaPath),
+                            Paths.get(schemaValidationOutputFilePath),
+                            jsonResponse,
+                            createFile,
+                            helper.getReporter());
 
         responseHeaders = serverResponse.responseHeaders;
 
