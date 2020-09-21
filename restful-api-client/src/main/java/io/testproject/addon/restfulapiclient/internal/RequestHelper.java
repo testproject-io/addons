@@ -85,8 +85,7 @@ public class RequestHelper {
             RequestMethod requestType,
             String uri, String queryParameters,
             String headers, String body,
-            String bodyFormat, String
-                    jsonPath,
+            String bodyFormat, String jsonPath,
             boolean ignoreUntrustedCertificate) {
         this.requestMethod = requestType;
         this.uri = uri;
@@ -242,6 +241,8 @@ public class RequestHelper {
         if (!Strings.isNullOrEmpty(jsonPath)) {
             if (!sr.responseBody.isEmpty()) {
                 try{
+                    // Creating the json object response using the Gson json provider.
+                    // This is required so the value is parsed as valid json and not string literal.
                     sr.jsonParseResultAsJson = JsonPath.parse(sr.responseBody,
                             new Configuration.ConfigurationBuilder()
                                     .jsonProvider(new GsonJsonProvider())
