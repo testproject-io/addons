@@ -64,6 +64,7 @@ public class BaseAction {
     @Parameter(description = "The path to the Json Schema")
     public String schemaPath;
 
+
     @Parameter(description = "Create a file for the Schema validation result? (true/false)")
     public boolean createFile;
 
@@ -72,6 +73,18 @@ public class BaseAction {
 
     @Parameter(description = "Output of the schema validation", direction = ParameterDirection.OUTPUT)
     public String schemaValidationOutput;
+
+    public void setSchemaPath(String schemaPath) {
+        this.schemaPath = schemaPath;
+    }
+
+    public void setCreateFile(boolean createFile) {
+        this.createFile = createFile;
+    }
+
+    public void setSchemaValidationOutputFilePath(String schemaValidationOutputFilePath) {
+        this.schemaValidationOutputFilePath = schemaValidationOutputFilePath;
+    }
 
     protected ExecutionResult baseExecute(AddonHelper helper, RequestMethod requestMethod, String body, String bodyFormat) throws FailureException {
 
@@ -91,17 +104,16 @@ public class BaseAction {
 
 
         // If schema file is present , call the validation
-        if(!Strings.isNullOrEmpty(schemaPath))
+        if(!Strings.isNullOrEmpty(schemaPath) && !Strings.isNullOrEmpty(jsonResponse))
             schemaValidationOutput = new ValidateJsonUsingSchema()
-                    .validate(Paths.get(schemaPath),
-                            Paths.get(schemaValidationOutputFilePath),
+                    .validate(schemaPath,
+                            schemaValidationOutputFilePath,
                             jsonResponse,
-                            createFile,
-                            helper.getReporter());
+                            createFile);
 
         responseHeaders = serverResponse.responseHeaders;
 
         // Examine the result of the action and report it
-        return ReporterHelper.reportResult(helper.getReporter(), serverResponse, expectedStatus, jsonPath);
+        return ReporterHelper.reportResult(helper.getReporter(), serverResponse, expectedStatus, jsonPath, schemaValidationOutput);
     }
 }

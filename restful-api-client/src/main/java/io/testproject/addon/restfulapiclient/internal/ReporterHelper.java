@@ -34,7 +34,7 @@ public class ReporterHelper {
     /**
      * Build the final result for the actions
      */
-    public static ExecutionResult reportResult(ActionReporter report, ServerResponse serverResponse, String expectedResponseCode, String jsonPath) {
+    public static ExecutionResult reportResult(ActionReporter report, ServerResponse serverResponse, String expectedResponseCode, String jsonPath, String schemaValidationOutput) {
 
         ExecutionResult executionResult = ExecutionResult.PASSED;
 
@@ -68,6 +68,9 @@ public class ReporterHelper {
             resultStr.append("Server returned response body: ").append(LS).append(serverResponse.responseBody);
         else
             resultStr.append("No body/value was returned by the server.").append(LS);
+
+        if(!schemaValidationOutput.isEmpty())
+            resultStr.append(String.format("Schema Validation result:\n%s", schemaValidationOutput));
 
 
         report.result(resultStr.toString());
