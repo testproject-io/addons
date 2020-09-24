@@ -22,11 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
-import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
-import com.jayway.jsonpath.spi.json.JsonProvider;
-import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
-import com.jayway.jsonpath.spi.mapper.MappingProvider;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
@@ -46,8 +42,6 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.EnumSet;
-import java.util.Set;
 
 /**
  * Helper class for sending the requests
@@ -56,27 +50,6 @@ import java.util.Set;
  * @version 1.0
  */
 public class RequestHelper {
-
-    static {
-        // Use Gson as default provider/mapper for JsonPath parsing.
-        // This will ensure that result is always a valid json
-        Configuration.setDefaults(new Configuration.Defaults() {
-            private final JsonProvider jsonProvider = new GsonJsonProvider(new GsonBuilder().serializeNulls().create());
-            private final MappingProvider mappingProvider = new GsonMappingProvider();
-
-            public JsonProvider jsonProvider() {
-                return jsonProvider;
-            }
-
-            public MappingProvider mappingProvider() {
-                return mappingProvider;
-            }
-
-            public Set<Option> options() {
-                return EnumSet.noneOf(Option.class);
-            }
-        });
-    }
 
     private RequestMethod requestMethod;
 
