@@ -57,27 +57,6 @@ import java.util.Set;
  */
 public class RequestHelper {
 
-    static {
-        // Use Gson as default provider/mapper for JsonPath parsing.
-        // This will ensure that result is always a valid json
-        Configuration.setDefaults(new Configuration.Defaults() {
-            private final JsonProvider jsonProvider = new GsonJsonProvider(new GsonBuilder().serializeNulls().create());
-            private final MappingProvider mappingProvider = new GsonMappingProvider();
-
-            public JsonProvider jsonProvider() {
-                return jsonProvider;
-            }
-
-            public MappingProvider mappingProvider() {
-                return mappingProvider;
-            }
-
-            public Set<Option> options() {
-                return EnumSet.noneOf(Option.class);
-            }
-        });
-    }
-
     private RequestMethod requestMethod;
 
     private String uri;
