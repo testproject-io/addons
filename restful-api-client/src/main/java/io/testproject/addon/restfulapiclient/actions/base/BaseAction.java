@@ -48,6 +48,9 @@ public class BaseAction {
     @Parameter(description = "Server response status code", direction = ParameterDirection.OUTPUT)
     public int status = 0;
 
+    @Parameter(description = "Value found using jsonPath in a form of a JSON object", direction = ParameterDirection.OUTPUT)
+    public String jsonResponse = "";
+
     @Parameter(description = "Ignore untrusted SSL certificate (true/false)")
     public boolean ignoreUntrustedCertificate;
 
@@ -67,7 +70,12 @@ public class BaseAction {
         status = serverResponse.responseCode;
 
         // If user provided jsonPath parameter then set response to be the value  found by evaluating jsonPath
-        response = (jsonPath.isEmpty()) ? serverResponse.responseBody : serverResponse.jsonParseResult;
+        if(jsonPath.isEmpty()) {
+            response = serverResponse.jsonParseResult;
+            jsonResponse = serverResponse.jsonParseResultAsJson;
+        } else {
+            response = jsonResponse = serverResponse.responseBody;
+        }
 
         responseHeaders = serverResponse.responseHeaders;
 

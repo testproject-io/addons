@@ -56,17 +56,24 @@ public class ReporterHelper {
         // Build the report & Fail the test in case there is JSON path and an error has occurred in extracting the json path from the response body
         if (!jsonPath.isEmpty()) {
             if (serverResponse.jJsonParseErrorMsg == null) {
-                resultStr.append("The value of \"").append(jsonPath).append("\" is \"").append(serverResponse.jsonParseResult).append("\". ").append(LS);
+                resultStr.append("The value of {{").append(jsonPath).append("}}").append(" is {{").append(serverResponse.jsonParseResult)
+                        .append("}}. ")
+                        .append(LS);
+                resultStr.append("The value of {{").append(jsonPath).append("}}").append(" as JsonObject is {{").append(serverResponse.jsonParseResultAsJson)
+                        .append("}}. ")
+                        .append(LS);
             } else {
                 resultStr.append("Unable to get the value '").append(jsonPath).append("' due to an error: ").append(serverResponse.jJsonParseErrorMsg).append("\". ").append(LS);
                 executionResult = ExecutionResult.FAILED;
             }
         }
 
-        if (!serverResponse.responseBody.isEmpty())
+        if (!serverResponse.responseBody.isEmpty()) {
             resultStr.append("Server returned response body: ").append(LS).append(serverResponse.responseBody);
-        else
+        }
+        else {
             resultStr.append("No body/value was returned by the server.").append(LS);
+        }
 
 
         report.result(resultStr.toString());

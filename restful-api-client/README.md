@@ -98,7 +98,11 @@ There are 4 actions in this Addon:
 
     > If `jsonPath` is set, `response` will be limited to the node/value found using the provided expression.\
     If the value specified is not found or the the response or the response is not a valid JSON, this field will be empty.
+      
+* `jsonResponse` - The full response from the server or the extracted node/value found using expression specified in `jsonPath` parameter as a JSON object.
 
+    > This parameter holds the whole response body, or the node/property requested via jsonPath as a JSON object.
+                                                                                                                                                              
 * `status` - Server's response status that is a number between 100 and 599 (1xx - 5xx).
 
 ### Results

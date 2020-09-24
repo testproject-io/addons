@@ -17,11 +17,9 @@
 package io.testproject.addon.restfulapiclient.internal;
 
 import com.google.common.base.Strings;
-import com.google.gson.GsonBuilder;
-import com.jayway.jsonpath.Configuration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.Option;
@@ -33,9 +31,15 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
 import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.*;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
@@ -44,8 +48,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.List;
-import javax.ws.rs.core.MediaType;
 
 /**
  * Helper class for sending the requests
@@ -106,11 +108,10 @@ public class RequestHelper {
      * @param ignoreUntrustedCertificate    - Ignore untrusted SSL certificate (optional, can be null)
      */
     public RequestHelper(
-            RequestMethod requestType, 
-            String uri, String queryParameters, 
-            String headers, String body, 
-            String bodyFormat, String 
-            jsonPath, 
+            RequestMethod requestType,
+            String uri, String queryParameters,
+            String headers, String body,
+            String bodyFormat, String jsonPath,
             boolean ignoreUntrustedCertificate) {
         this.requestMethod = requestType;
         this.uri = uri;
@@ -260,9 +261,14 @@ public class RequestHelper {
         sr.responseHeaders = buildResponseString(response.getStringHeaders());
 
         if (!Strings.isNullOrEmpty(jsonPath)) {
-
             if (!sr.responseBody.isEmpty()) {
-                try {
+                try{
+                    // Creating the json object response using the Gson json provider.
+                    // This is required so the value is parsed as valid json and not string literal.
+                    sr.jsonParseResultAsJson = JsonPath.parse(sr.responseBody,
+                            new Configuration.ConfigurationBuilder()
+                                    .jsonProvider(new GsonJsonProvider())
+                                    .build()).read(jsonPath).toString();
                     sr.jsonParseResult = JsonPath.parse(sr.responseBody).read(jsonPath).toString();
                 } catch (JsonPathException e) {
                     sr.jJsonParseErrorMsg = e.getMessage();
