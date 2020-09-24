@@ -4,7 +4,7 @@ version '1.5.6'
 apply plugin: 'java'
 
 // If necessary, update the location of TestProject SDK JAR file
-def TP_SDK = 'io.testproject.sdk.java.jar'
+def TP_SDK = System.getenv('TP_SDK')
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -12,6 +12,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 // Configurations
@@ -45,6 +46,8 @@ jar {
 
 dependencies {
     tpsdk files("${TP_SDK}")
+    compile 'com.github.everit-org.json-schema:org.everit.json.schema:1.12.1'
+
 
     compile group: 'org.json', name: 'json', version: '20180813'
     compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
