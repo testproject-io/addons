@@ -25,6 +25,7 @@ import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 import org.apache.http.client.utils.URIBuilder;
+import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
 import javax.net.ssl.SSLContext;
@@ -125,7 +126,11 @@ public class RequestHelper {
                 SSLContext sslContext = SSLContext.getInstance("SSL");
                 sslContext.init(null, trustManager, null);
 
-                client = ClientBuilder.newBuilder().sslContext(sslContext).build();
+                client = ClientBuilder.newBuilder()
+                        .sslContext(sslContext)
+                        .withConfig( new ClientConfig())
+                        .hostnameVerifier((s, sslSession) -> true)
+                        .build();
             } catch (NoSuchAlgorithmException | KeyManagementException e){
                 throw new FailureException("Failed to prepare a request client with custom SSL settings", e);
             }
