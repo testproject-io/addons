@@ -91,6 +91,22 @@ There are 4 actions in this Addon:
 
 	Parameter is *false* by default.
 	If set to `true`, RESTful client will accept self signed and untrusted SSL certificate presented by the server when sending a request.
+	
+* `schemaValidationOutputFilePath` - This parameter is the file path for the result of the JSON schema validation.
+    
+    If empty, it will create the output file in the system's Downloads directory.
+    
+* `schemaPath` - This parameter is the path for the JSON Schema file.
+       
+    This parameter is for a *full** path of a local schema file, or a URL pointing to a remote schema file.
+    If a URL is provided, it will download the schema locally to a temporary file, before performing the validation.
+    Schema validation is performed on the JSON response object provided in the `JsonResponse` field.
+    
+* `createFile` - This parameter is a boolean flag to indicate that a validation results output is required.
+       
+    If set to `true`, and the `schemaValidationOutput` parameter is set, a file holding the validation result will be created
+    in the provided location.
+        
 
 #### Output Fields
 
@@ -98,8 +114,16 @@ There are 4 actions in this Addon:
 
     > If `jsonPath` is set, `response` will be limited to the node/value found using the provided expression.\
     If the value specified is not found or the the response or the response is not a valid JSON, this field will be empty.
+      
+* `jsonResponse` - The full response from the server or the extracted node/value found using expression specified in `jsonPath` parameter as a JSON object.
 
+    > This parameter holds the whole response body, or the node/property requested via jsonPath as a JSON object.
+                                                                                                                                                              
 * `status` - Server's response status that is a number between 100 and 599 (1xx - 5xx).
+
+* `schemaValidationOutput` - This parameter is the output parameter for the schema validation.
+       
+    This parameter will contain the output of any violations in the JSON file according to the provided schema.
 
 ### Results
 
@@ -123,6 +147,7 @@ All actions will report a message with the following information, no matter if t
 
 * Server response status (taken from the `status` field)
 * Response body or “No body/value was returned by the server” when it's absent.
+* Report of violations discovered using provided json schema, or a statement that none were found.
 
 ### Examples
 
