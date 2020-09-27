@@ -75,7 +75,7 @@ public class ReporterHelper {
             resultStr.append("No body/value was returned by the server.").append(LS);
         }
 
-        if(!schemaValidationOutput.isEmpty()) {
+        if(!Strings.isNullOrEmpty(schemaValidationOutput)) {
             resultStr.append(String.format("Schema Validation result:\n%s", schemaValidationOutput));
         }
 
