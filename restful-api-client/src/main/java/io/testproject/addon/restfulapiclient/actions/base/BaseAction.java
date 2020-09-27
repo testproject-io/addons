@@ -64,7 +64,6 @@ public class BaseAction {
     @Parameter(description = "The path to the Json Schema")
     public String schemaPath;
 
-
     @Parameter(description = "Create a file for the Schema validation result? (true/false)")
     public boolean createFile;
 
@@ -106,8 +105,7 @@ public class BaseAction {
             response = jsonResponse = serverResponse.responseBody;
         }
 
-
-        // If schema file is present , call the validation
+        // If schema file is present, perform validation
         if(!Strings.isNullOrEmpty(schemaPath) && !Strings.isNullOrEmpty(jsonResponse))
             schemaValidationOutput = new ValidateJsonUsingSchema()
                     .validate(schemaPath,
