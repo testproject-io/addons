@@ -98,7 +98,7 @@ public class BaseAction {
         status = serverResponse.responseCode;
 
         // If user provided jsonPath parameter then set response to be the value  found by evaluating jsonPath
-        if(jsonPath.isEmpty()) {
+        if(!jsonPath.isEmpty()) {
             response = serverResponse.jsonParseResult;
             jsonResponse = serverResponse.jsonParseResultAsJson;
         } else {
