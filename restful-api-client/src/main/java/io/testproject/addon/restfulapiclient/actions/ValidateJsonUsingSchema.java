@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public class ValidateJsonUsingSchema {
     }
 
     private static boolean isValidPath(String path) {
-        return new File(path).isDirectory();
+        return Files.isWritable(Paths.get(path));
     }
 
     private File createFile(String from, String path) throws IOException {
