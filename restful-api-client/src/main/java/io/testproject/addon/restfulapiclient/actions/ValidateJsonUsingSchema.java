@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class ValidateJsonUsingSchema {
     private final String TEMP_SCHEMA = "TempSchema";
     private final String FILE = "file";
     private final String URL = "url";
+    private static Logger logger = LoggerFactory.getLogger(ValidateJsonUsingSchema.class);
 
     /**
      * The validate method, takes the JSON schema and returns the result of the validation as a String.
@@ -58,8 +60,6 @@ public class ValidateJsonUsingSchema {
         Schema schema;
         JSONObject rawSchema;
         File file;
-        Logger logger = LoggerFactory.getLogger(ValidateJsonUsingSchema.class);
-
 
         try {
             // Check if path to schema comes from a URL.
@@ -117,7 +117,12 @@ public class ValidateJsonUsingSchema {
     }
 
     private static boolean isValidPath(String path) {
-        return Files.isWritable(Paths.get(path));
+        try {
+            return Files.isWritable(Paths.get(path));
+        } catch(InvalidPathException e) {
+            logger.error("Path: '{}' is invalid.", path, e);
+            return false;
+        }
     }
 
     private File createFile(String from, String path) throws IOException {
