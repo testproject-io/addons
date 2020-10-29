@@ -70,9 +70,10 @@ public class RequestHelper {
 
     private Invocation.Builder request;
 
+    private String headerDelimiter;
+
     /**
      * The constructor
-     *
      * @param requestType                   - The type of the request
      * @param uri                           - The uri
      * @param queryParameters               - queryParameters of the request (optional, can be null)
@@ -80,13 +81,15 @@ public class RequestHelper {
      * @param body                          - body of the request (optional, can be null)
      * @param bodyFormat                    - The type of the body (optional, can be null)
      * @param ignoreUntrustedCertificate    - Ignore untrusted SSL certificate (optional, can be null)
+     * @param headerDelimiter               - The character which to delimit the headers (optional, can be null)
      */
     public RequestHelper(
             RequestMethod requestType,
             String uri, String queryParameters,
             String headers, String body,
             String bodyFormat, String jsonPath,
-            boolean ignoreUntrustedCertificate) {
+            boolean ignoreUntrustedCertificate,
+            String headerDelimiter) {
         this.requestMethod = requestType;
         this.uri = uri;
         this.queryParameters = queryParameters;
@@ -95,6 +98,7 @@ public class RequestHelper {
         this.bodyFormat = bodyFormat;
         this.jsonPath = jsonPath;
         this.ignoreUntrustedCertificate = ignoreUntrustedCertificate;
+        this.headerDelimiter = headerDelimiter;
     }
 
     /**
@@ -179,10 +183,11 @@ public class RequestHelper {
         // Set up request headers
 
         if (!Strings.isNullOrEmpty(headers)) {
+            if(Strings.isNullOrEmpty(headerDelimiter))
+                headerDelimiter = "=";
             String[] headersArr = headers.split("\\s*,\\s*");
             for (String headerData : headersArr) {
-                String[] headerSplit = headerData.split("=");
-
+                String[] headerSplit = headerData.split(headerDelimiter);
                 String headerKey = headerSplit[0];
                 String headerValue = headerData.substring(headerKey.length() + 1);
                 request.header(headerKey, headerValue);
