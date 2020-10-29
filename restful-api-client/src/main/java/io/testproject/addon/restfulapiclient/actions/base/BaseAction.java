@@ -37,7 +37,7 @@ public class BaseAction {
     @Parameter(description = "Query parameters (e.g. abc=123&efg=456)")
     public String query = "";
 
-    @Parameter(description = "Request headers (e.g. h1=v1,h2=v2")
+    @Parameter(description = "Request headers (default: h1=v1,h2=v2")
     public String headers = "";
 
     @Parameter(description = "Expected response code")
@@ -70,6 +70,9 @@ public class BaseAction {
     @Parameter(description = "If createFile is true, this will be the output path for the validation result file")
     public String schemaValidationOutputFilePath;
 
+    @Parameter(description = "Which character to delimit the headers? (e.g '=' by default)")
+    public String headerDelimiter;
+
     @Parameter(description = "Output of the schema validation", direction = ParameterDirection.OUTPUT)
     public String schemaValidationOutput;
 
@@ -91,7 +94,7 @@ public class BaseAction {
         InputValidator.validateInputsFields(uri, query, headers, expectedStatus);
 
         // Create a request helper, with the desired settings
-        RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate);
+        RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate, headerDelimiter);
 
         // Send the request and receive a response
         ServerResponse serverResponse = requestHelper.sendRequest();
