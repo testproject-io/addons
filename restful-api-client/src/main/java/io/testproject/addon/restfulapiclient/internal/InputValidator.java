@@ -17,12 +17,13 @@ public class InputValidator {
      * @param queryParameters - The queryParameters field
      * @param headers - The headers field
      * @param expectedResponseCode - expectedResponseCode field
+     * @param headerDelimiter - The header delimiter
      * @throws IllegalArgumentException - An illegal value for one of the fields was found
      */
-    public static void validateInputsFields(String uri, String queryParameters, String headers, String expectedResponseCode) throws FailureException {
+    public static void validateInputsFields(String uri, String queryParameters, String headers, String expectedResponseCode, String headerDelimiter) throws FailureException {
         validateURI(uri);
         validateQueryParameters(queryParameters);
-        validateHeaders(headers);
+        validateHeaders(headers, headerDelimiter);
         validateExpectedResponseCode(expectedResponseCode);
     }
 
@@ -42,12 +43,13 @@ public class InputValidator {
         }
     }
 
-    private static void validateHeaders(String headers) throws FailureException {
+    private static void validateHeaders(String headers, String headerDelimiter) throws FailureException {
         if (Strings.isNullOrEmpty(headers)) return;
+        if (Strings.isNullOrEmpty(headerDelimiter)) headerDelimiter = "=";
 
         String[] headersArr = headers.split("\\s*,\\s*");
         for (String headerData : headersArr) {
-            String[] headerSplit = headerData.split("=");
+            String[] headerSplit = headerData.split(headerDelimiter);
             if (headerSplit.length < 2)
                 throw new FailureException("The '" + headers + "' parameter is invalid");
         }
