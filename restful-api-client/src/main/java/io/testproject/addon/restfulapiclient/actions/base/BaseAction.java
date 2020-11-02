@@ -91,7 +91,7 @@ public class BaseAction {
     protected ExecutionResult baseExecute(AddonHelper helper, RequestMethod requestMethod, String body, String bodyFormat) throws FailureException {
 
         // Validate input fields. In case that one of the fields is invalid, throw FailureException
-        InputValidator.validateInputsFields(uri, query, headers, expectedStatus);
+        InputValidator.validateInputsFields(uri, query, headers, expectedStatus, headerDelimiter);
 
         // Create a request helper, with the desired settings
         RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate, headerDelimiter);
