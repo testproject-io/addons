@@ -27,6 +27,9 @@ import io.testproject.java.sdk.v2.exceptions.FailureException;
 import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -39,6 +42,12 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -72,6 +81,10 @@ public class RequestHelper {
 
     private String headerDelimiter;
 
+    private boolean isXML;
+
+    private String xpath;
+
     /**
      * The constructor
      * @param requestType                   - The type of the request
@@ -82,6 +95,8 @@ public class RequestHelper {
      * @param bodyFormat                    - The type of the body (optional, can be null)
      * @param ignoreUntrustedCertificate    - Ignore untrusted SSL certificate (optional, can be null)
      * @param headerDelimiter               - The character which to delimit the headers (optional, can be null)
+     * @param isXML                         - Indicates the response will be XML format (Optional, can be null)
+     * @param xpath                         - If response ix XML, provided xpath to parse the result (Optional)
      */
     public RequestHelper(
             RequestMethod requestType,
@@ -89,7 +104,9 @@ public class RequestHelper {
             String headers, String body,
             String bodyFormat, String jsonPath,
             boolean ignoreUntrustedCertificate,
-            String headerDelimiter) {
+            String headerDelimiter,
+            boolean isXML,
+            String xpath) {
         this.requestMethod = requestType;
         this.uri = uri;
         this.queryParameters = queryParameters;
@@ -99,6 +116,8 @@ public class RequestHelper {
         this.jsonPath = jsonPath;
         this.ignoreUntrustedCertificate = ignoreUntrustedCertificate;
         this.headerDelimiter = headerDelimiter;
+        this.isXML = isXML;
+        this.xpath = xpath;
     }
 
     /**
@@ -234,7 +253,9 @@ public class RequestHelper {
                     response = request.method("PATCH", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
             }
         } catch (ProcessingException e) {
-            throw new FailureException("Failed to send the request due to an error", e);
+            throw new FailureException(String.format("Failed to send the request due to an error%s%s",
+                    System.lineSeparator(),
+                    e.toString()), e);
         }
 
         ServerResponse sr = new ServerResponse();
@@ -261,6 +282,27 @@ public class RequestHelper {
             }
         }
 
+        if(isXML && !Strings.isNullOrEmpty(xpath)) {
+            // Parse XPATH response if XML
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder;
+                builder = factory.newDocumentBuilder();
+                InputSource inputSource = new InputSource(new StringReader(sr.responseBody));
+                Document doc = builder.parse(inputSource);
+                XPathFactory xPathfactory = XPathFactory.newInstance();
+                XPath xpath = xPathfactory.newXPath();
+                XPathExpression expr = xpath.compile(this.xpath);
+
+                sr.xpathResponse = expr.evaluate(doc, XPathConstants.STRING).toString();
+
+            } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
+                sr.xpathResponseErrorMessage = String.format("Failed to parse response using XPATH %s%sError Message is: %s",
+                        this.xpath,
+                        System.lineSeparator(),
+                        e.toString());
+            }
+        }
         return sr;
     }
 

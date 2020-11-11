@@ -73,8 +73,17 @@ public class BaseAction {
     @Parameter(description = "Which character to delimit the headers? (e.g '=' by default)")
     public String headerDelimiter;
 
+    @Parameter(description = "Will the response hold XML value? (true/false)")
+    public boolean isXML;
+
+    @Parameter(description = "If isXML is set to true, use this xpath on the response (e.g //Price)")
+    public String xpath;
+
     @Parameter(description = "Output of the schema validation", direction = ParameterDirection.OUTPUT)
     public String schemaValidationOutput;
+
+    @Parameter(description = "Output of the xpath parsing if XML", direction = ParameterDirection.OUTPUT)
+    public String xpathResponse;
 
     public void setSchemaPath(String schemaPath) {
         this.schemaPath = schemaPath;
@@ -94,7 +103,7 @@ public class BaseAction {
         InputValidator.validateInputsFields(uri, query, headers, expectedStatus, headerDelimiter);
 
         // Create a request helper, with the desired settings
-        RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate, headerDelimiter);
+        RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate, headerDelimiter, isXML, xpath);
 
         // Send the request and receive a response
         ServerResponse serverResponse = requestHelper.sendRequest();
@@ -104,6 +113,7 @@ public class BaseAction {
         if(!jsonPath.isEmpty()) {
             response = serverResponse.jsonParseResult;
             jsonResponse = serverResponse.jsonParseResultAsJson;
+            xpathResponse = serverResponse.xpathResponse;
         } else {
             response = jsonResponse = serverResponse.responseBody;
         }

@@ -32,4 +32,6 @@ public class ServerResponse {
     public String jsonParseResult = null;
     public String jsonParseResultAsJson = null;
     public String jJsonParseErrorMsg = null;
+    public String xpathResponse = null;
+    public String xpathResponseErrorMessage = null;
 }

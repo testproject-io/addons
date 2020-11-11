@@ -69,7 +69,7 @@ public class ReporterHelper {
         }
 
         if (!serverResponse.responseBody.isEmpty()) {
-            resultStr.append("Server returned response body: ").append(LS).append(serverResponse.responseBody);
+            resultStr.append("Server returned response body: ").append(LS).append(serverResponse.responseBody).append(System.lineSeparator());
         }
         else {
             resultStr.append("No body/value was returned by the server.").append(LS);
@@ -77,6 +77,14 @@ public class ReporterHelper {
 
         if(!Strings.isNullOrEmpty(schemaValidationOutput)) {
             resultStr.append(String.format("\nSchema Validation result:\n%s", schemaValidationOutput));
+        }
+
+        if(!Strings.isNullOrEmpty(serverResponse.xpathResponseErrorMessage)) {
+            resultStr.append(serverResponse.xpathResponseErrorMessage).append(System.lineSeparator());
+        }
+
+        if(!Strings.isNullOrEmpty(serverResponse.xpathResponse)) {
+            resultStr.append("XPATH result is: ").append(System.lineSeparator()).append(serverResponse.xpathResponse);
         }
 
 
