@@ -26,6 +26,7 @@ import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
 import javax.net.ssl.SSLContext;
@@ -36,6 +37,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -110,7 +112,8 @@ public class RequestHelper {
     private void initializeRequest() throws FailureException {
 
         Client client = null;
-
+        ClientConfig config = new ClientConfig();
+        config.property(ClientProperties.SUPPRESS_HTTP_COMPLIANCE_VALIDATION, true);
         if (ignoreUntrustedCertificate) {
             try {
                 TrustManager[] trustManager = new X509TrustManager[]{new X509TrustManager() {
@@ -132,14 +135,14 @@ public class RequestHelper {
 
                 client = ClientBuilder.newBuilder()
                         .sslContext(sslContext)
-                        .withConfig( new ClientConfig())
+                        .withConfig(config)
                         .hostnameVerifier((s, sslSession) -> true)
                         .build();
             } catch (NoSuchAlgorithmException | KeyManagementException e){
                 throw new FailureException("Failed to prepare a request client with custom SSL settings", e);
             }
         } else {
-            client = ClientBuilder.newClient();
+            client = ClientBuilder.newClient(config);
         }
 
         // Following must be set to allow PATCH requests with Jersey
@@ -196,7 +199,10 @@ public class RequestHelper {
 
         // Set default bodyFormat
         if (!Strings.isNullOrEmpty(body) && Strings.isNullOrEmpty(bodyFormat) &&
-                (requestMethod == RequestMethod.POST || requestMethod == RequestMethod.PUT))
+                (requestMethod == RequestMethod.POST
+                        || requestMethod == RequestMethod.PUT
+                        || requestMethod == RequestMethod.DELETE 
+                        || requestMethod == RequestMethod.PATCH))
             bodyFormat = MediaType.APPLICATION_JSON;
     }
 
@@ -212,9 +218,6 @@ public class RequestHelper {
 
         Response response = null;
 
-        if (!Strings.isNullOrEmpty(body) && bodyFormat.isEmpty())
-            bodyFormat = MediaType.APPLICATION_JSON;
-
         try {
             switch (requestMethod) {
                 case GET:
@@ -228,7 +231,7 @@ public class RequestHelper {
                     response = request.post((Strings.isNullOrEmpty(body)) ? null : Entity.entity(body, bodyFormat));
                     break;
                 case DELETE:
-                    response = request.delete();
+                    response = request.method("DELETE", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
                     break;
                 case PATCH:
                     response = request.method("PATCH", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
