@@ -198,11 +198,7 @@ public class RequestHelper {
         }
 
         // Set default bodyFormat
-        if (!Strings.isNullOrEmpty(body) && Strings.isNullOrEmpty(bodyFormat) &&
-                (requestMethod == RequestMethod.POST
-                        || requestMethod == RequestMethod.PUT
-                        || requestMethod == RequestMethod.DELETE 
-                        || requestMethod == RequestMethod.PATCH))
+        if (!Strings.isNullOrEmpty(body) && Strings.isNullOrEmpty(bodyFormat))
             bodyFormat = MediaType.APPLICATION_JSON;
     }
 
@@ -221,7 +217,7 @@ public class RequestHelper {
         try {
             switch (requestMethod) {
                 case GET:
-                    response = request.get();
+                    response = request.method("GET", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
                     break;
                 case PUT:
                     Entity<?> empty = Entity.text("");
@@ -237,7 +233,7 @@ public class RequestHelper {
                     response = request.method("PATCH", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
             }
         } catch (ProcessingException e) {
-            throw new FailureException("Failed to send the request due to an error", e);
+            throw new FailureException("Failed to send the request due to an error\n" + e.toString(), e);
         }
 
         ServerResponse sr = new ServerResponse();
