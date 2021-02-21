@@ -3,6 +3,8 @@ package io.testproject.addon.restfulapiclient.internal;
 import com.google.common.base.Strings;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 
+import java.io.File;
+
 /**
  * Helper class for validating the actions inputs
  *
@@ -18,13 +20,22 @@ public class InputValidator {
      * @param headers - The headers field
      * @param expectedResponseCode - expectedResponseCode field
      * @param headerDelimiter - The header delimiter
-     * @throws IllegalArgumentException - An illegal value for one of the fields was found
+     * @param filePath - Path to a local file to upload
+     * @throws FailureException - An illegal value for one of the fields was found
      */
-    public static void validateInputsFields(String uri, String queryParameters, String headers, String expectedResponseCode, String headerDelimiter) throws FailureException {
+    public static void validateInputsFields(String uri, String queryParameters, String headers, String expectedResponseCode, String headerDelimiter, String filePath) throws FailureException {
         validateURI(uri);
         validateQueryParameters(queryParameters);
         validateHeaders(headers, headerDelimiter);
         validateExpectedResponseCode(expectedResponseCode);
+        validateFilePath(filePath);
+    }
+
+    private static void validateFilePath(String filePath) throws FailureException {
+        if(!Strings.isNullOrEmpty(filePath)) {
+            if(!new File(filePath).exists())
+                throw new FailureException("File " + filePath + " was not found");
+        }
     }
 
     private static void validateURI(String uri) throws FailureException {

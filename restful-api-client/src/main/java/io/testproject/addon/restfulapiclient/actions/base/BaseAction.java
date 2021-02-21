@@ -26,8 +26,6 @@ import io.testproject.java.sdk.v2.addons.helpers.AddonHelper;
 import io.testproject.java.sdk.v2.enums.ExecutionResult;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
 
-import java.nio.file.Paths;
-
 public class BaseAction {
 
     // Base and common fields
@@ -88,13 +86,13 @@ public class BaseAction {
         this.schemaValidationOutputFilePath = schemaValidationOutputFilePath;
     }
 
-    protected ExecutionResult baseExecute(AddonHelper helper, RequestMethod requestMethod, String body, String bodyFormat) throws FailureException {
+    protected ExecutionResult baseExecute(AddonHelper helper, RequestMethod requestMethod, String body, String bodyFormat, String filePath) throws FailureException {
 
         // Validate input fields. In case that one of the fields is invalid, throw FailureException
-        InputValidator.validateInputsFields(uri, query, headers, expectedStatus, headerDelimiter);
+        InputValidator.validateInputsFields(uri, query, headers, expectedStatus, headerDelimiter, filePath);
 
         // Create a request helper, with the desired settings
-        RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate, headerDelimiter);
+        RequestHelper requestHelper = new RequestHelper(requestMethod, uri, query, headers, body, bodyFormat, jsonPath, ignoreUntrustedCertificate, headerDelimiter, filePath);
 
         // Send the request and receive a response
         ServerResponse serverResponse = requestHelper.sendRequest();
