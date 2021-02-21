@@ -44,6 +44,10 @@ jar {
 
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     tpsdk files("${TP_SDK}")
     compile 'com.github.everit-org.json-schema:org.everit.json.schema:1.12.1'
@@ -51,6 +55,9 @@ dependencies {
 
     compile group: 'org.json', name: 'json', version: '20180813'
     compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.4.0'
+    compile 'org.glassfish.jersey.media:jersey-media-multipart:2.22.1'
+
+
 
     // JUnit 5
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'

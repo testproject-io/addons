@@ -40,7 +40,7 @@ public class DeleteAction extends BaseAction implements GenericAction {
     public String format = "";
 
     public ExecutionResult execute(AddonHelper helper) throws FailureException {
-        return baseExecute(helper, RequestMethod.DELETE, body, format);
+        return baseExecute(helper, RequestMethod.DELETE, body, format, "");
     }
 }
 

@@ -28,6 +28,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.media.multipart.MultiPart;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -37,10 +38,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -74,6 +76,8 @@ public class RequestHelper {
 
     private String headerDelimiter;
 
+    private String filePath;
+
     /**
      * The constructor
      * @param requestType                   - The type of the request
@@ -84,6 +88,7 @@ public class RequestHelper {
      * @param bodyFormat                    - The type of the body (optional, can be null)
      * @param ignoreUntrustedCertificate    - Ignore untrusted SSL certificate (optional, can be null)
      * @param headerDelimiter               - The character which to delimit the headers (optional, can be null)
+     * @param filePath                      - The path to a local file, if provided, will be used as multipart (optional, can be null)
      */
     public RequestHelper(
             RequestMethod requestType,
@@ -91,7 +96,8 @@ public class RequestHelper {
             String headers, String body,
             String bodyFormat, String jsonPath,
             boolean ignoreUntrustedCertificate,
-            String headerDelimiter) {
+            String headerDelimiter,
+            String filePath) {
         this.requestMethod = requestType;
         this.uri = uri;
         this.queryParameters = queryParameters;
@@ -101,6 +107,7 @@ public class RequestHelper {
         this.jsonPath = jsonPath;
         this.ignoreUntrustedCertificate = ignoreUntrustedCertificate;
         this.headerDelimiter = headerDelimiter;
+        this.filePath = filePath;
     }
 
     /**
@@ -212,25 +219,42 @@ public class RequestHelper {
 
         initializeRequest();
 
+        Entity<?> entity;
+        if(!Strings.isNullOrEmpty(filePath)) {
+            try {
+                MultiPart multiPart;
+                entity = Entity.entity(new FileInputStream(filePath),  MediaType.MULTIPART_FORM_DATA);
+                multiPart = new MultiPart().bodyPart(entity, entity.getMediaType());
+                if(!Strings.isNullOrEmpty(body))
+                    multiPart.bodyPart(body, MediaType.valueOf(bodyFormat));
+            } catch (FileNotFoundException e) {
+                throw new FailureException("Failed to open file\n" + e.toString(), e);
+            }
+        } else {
+            if(requestMethod == RequestMethod.PUT)
+                entity = Strings.isNullOrEmpty(body) ? Entity.text("") : Entity.entity(body, bodyFormat);
+            else
+                entity = Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat);
+        }
+
         Response response = null;
 
         try {
             switch (requestMethod) {
                 case GET:
-                    response = request.method("GET", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
+                    response = request.method("GET", entity);
                     break;
                 case PUT:
-                    Entity<?> empty = Entity.text("");
-                    response = request.put((Strings.isNullOrEmpty(body)) ? empty : Entity.entity(body, bodyFormat));
+                    response = request.put(entity);
                     break;
                 case POST:
-                    response = request.post((Strings.isNullOrEmpty(body)) ? null : Entity.entity(body, bodyFormat));
+                    response = request.post(entity);
                     break;
                 case DELETE:
-                    response = request.method("DELETE", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
+                    response = request.method("DELETE", entity);
                     break;
                 case PATCH:
-                    response = request.method("PATCH", Strings.isNullOrEmpty(body) ? null : Entity.entity(body, bodyFormat));
+                    response = request.method("PATCH", entity);
             }
         } catch (ProcessingException e) {
             throw new FailureException("Failed to send the request due to an error\n" + e.toString(), e);

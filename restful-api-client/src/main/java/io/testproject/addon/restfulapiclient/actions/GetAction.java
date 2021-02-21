@@ -40,6 +40,6 @@ public class GetAction extends BaseAction implements GenericAction {
     public String format = "";
 
     public ExecutionResult execute(AddonHelper helper) throws FailureException {
-        return baseExecute(helper, RequestMethod.GET, body, format);
+        return baseExecute(helper, RequestMethod.GET, body, format, "");
     }
 }

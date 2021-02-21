@@ -39,7 +39,10 @@ public class PatchAction extends BaseAction implements GenericAction {
     @Parameter(description = "Body format")
     public String format = "";
 
+    @Parameter(description = "Local file path, if a file upload is required (e.g. C:\\Test\\test_file.txt)")
+    public String filePath = "";
+
     public ExecutionResult execute(AddonHelper helper) throws FailureException {
-        return baseExecute(helper, RequestMethod.PATCH, body, format);
+        return baseExecute(helper, RequestMethod.PATCH, body, format, filePath);
     }
 }
