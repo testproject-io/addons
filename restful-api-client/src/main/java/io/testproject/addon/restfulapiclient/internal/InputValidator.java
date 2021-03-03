@@ -48,6 +48,9 @@ public class InputValidator {
 
         String[] queryList = queryParameters.split("&");
         for (String queryData : queryList) {
+            // Working with Fiql, no need to validate the query params.
+            if(queryData.startsWith("_"))
+                break;
             String[] querySplit = queryData.split("=");
             if (querySplit.length < 2)
                 throw new FailureException("The queryParameters parameter is invalid");

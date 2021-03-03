@@ -28,6 +28,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 
 import javax.net.ssl.SSLContext;
@@ -177,7 +178,11 @@ public class RequestHelper {
             for (String queryData : queryList) {
                 String[] querySplit = queryData.split("=");
                 String queryKey = querySplit[0];
-                String queryValue = queryData.substring(queryKey.length() + 1);
+                String queryValue = "";
+                // This is to bypass query parameters being sent over with Fiql
+                try {
+                    queryValue = queryData.substring(queryKey.length() + 1);
+                } catch (IndexOutOfBoundsException ignored) {}
                 uriBuilder.addParameter(queryKey, queryValue);
             }
         }
@@ -223,10 +228,11 @@ public class RequestHelper {
         if(!Strings.isNullOrEmpty(filePath)) {
             try {
                 MultiPart multiPart;
-                entity = Entity.entity(new FileInputStream(filePath),  MediaType.MULTIPART_FORM_DATA);
-                multiPart = new MultiPart().bodyPart(entity, entity.getMediaType());
+                multiPart = new MultiPart().bodyPart(
+                        new BodyPart(new FileInputStream(filePath), MediaType.MULTIPART_FORM_DATA_TYPE));
                 if(!Strings.isNullOrEmpty(body))
-                    multiPart.bodyPart(body, MediaType.valueOf(bodyFormat));
+                    multiPart.bodyPart(new BodyPart(body, MediaType.valueOf(bodyFormat)));
+                entity = Entity.entity(multiPart, multiPart.getMediaType());
             } catch (FileNotFoundException e) {
                 throw new FailureException("Failed to open file\n" + e.toString(), e);
             }
