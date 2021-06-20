@@ -59,6 +59,9 @@ public class BaseAction {
     @Parameter(description = "Response Headers", direction = ParameterDirection.OUTPUT)
     public String responseHeaders;
 
+    @Parameter(description = "Response time of the request (in milliseconds)", direction = ParameterDirection.OUTPUT)
+    public long responseTime;
+
     @Parameter(description = "The path to the Json Schema")
     public String schemaPath;
 
@@ -97,6 +100,7 @@ public class BaseAction {
         // Send the request and receive a response
         ServerResponse serverResponse = requestHelper.sendRequest();
         status = serverResponse.responseCode;
+        responseTime = serverResponse.responseTime;
 
         // If user provided jsonPath parameter then set response to be the value  found by evaluating jsonPath
         if(!jsonPath.isEmpty()) {

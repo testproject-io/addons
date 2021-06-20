@@ -24,6 +24,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import io.testproject.java.sdk.v2.exceptions.FailureException;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.http.client.utils.URIBuilder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -47,6 +48,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Helper class for sending the requests
@@ -238,8 +240,10 @@ public class RequestHelper {
         }
 
         Response response = null;
+        StopWatch watch = new StopWatch();
 
         try {
+            watch.start();
             switch (requestMethod) {
                 case GET:
                     response = request.method("GET", entity);
@@ -259,9 +263,12 @@ public class RequestHelper {
         } catch (ProcessingException e) {
             throw new FailureException("Failed to send the request due to an error\n" + e.toString(), e);
         }
+        finally {
+            watch.stop();
+        }
 
         ServerResponse sr = new ServerResponse();
-
+        sr.responseTime = watch.getTime(TimeUnit.MILLISECONDS);
         sr.responseBody = response.readEntity(String.class);
         sr.responseCode = response.getStatus();
         sr.responseHeaders = buildResponseString(response.getStringHeaders());
