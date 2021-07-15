@@ -28,6 +28,7 @@ public class ServerResponse {
     public String responseBody = "";
     public int responseCode;
     public String responseHeaders;
+    public long responseTime;
 
     public String jsonParseResult = null;
     public String jsonParseResultAsJson = null;
