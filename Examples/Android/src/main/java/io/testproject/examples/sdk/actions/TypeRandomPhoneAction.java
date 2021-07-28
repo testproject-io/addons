@@ -24,6 +24,7 @@ public class TypeRandomPhoneAction implements AndroidElementAction {
     public ExecutionResult execute(AndroidAddonHelper helper, AndroidElement element) throws FailureException {
         long number = (long) (Math.random() * Math.pow(10, maxDigits));
         phone = String.format("+%s%s", countryCode, number);
+        element = helper.getDriver().findElement(helper.getSearchCriteria());
         element.sendKeys(phone);
         return ExecutionResult.PASSED;
     }
