@@ -388,13 +388,18 @@ This allows creating smart crowd based addons for industry common elements and l
 * [Android - Element Action](Examples/Android/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
 * [iOS - Element Action](Examples/IOS/src/main/java/io/testproject/examples/sdk/actions/TypeRandomPhoneAction.java)
 
+> The last argument `element` is deprecated and will always be `null`. Instead, use the `helper.getSearchCriteria()` to get the By instance and search for the `element` ad-hoc.
+
 This action generates a random phone number based on provided country code and max digits amount, typing it in a text field:
 
 ```java
-long number = (long) (Math.random() * Math.pow(10, maxDigits));
-phone = String.format("+%s%s", countryCode, number);
-element.sendKeys(phone);
-return ExecutionResult.PASSED;
+public ExecutionResult execute(WebAddonHelper helper, WebElement element) throws FailureException {
+    long number = (long) (Math.random() * Math.pow(10, maxDigits));
+    phone = String.format("+%s%s", countryCode, number);
+    element = helper.getDriver().findElement(helper.getSearchCriteria());
+    element.sendKeys(phone);
+    return ExecutionResult.PASSED;
+}
 ```
 
 It also stores the result in an output field (see the annotation and ***ParameterDirection.OUTPUT*** configuration) for further use later in test.\
