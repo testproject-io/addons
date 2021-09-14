@@ -20,6 +20,10 @@ public class ClearFieldsAction implements IOSAction {
             element.clear();
         }
 
+        for (IOSElement element : helper.getDriver().findElements(By.className("XCUIElementTypeSearchField"))) {
+            element.clear();
+        }
+
         return ExecutionResult.PASSED;
     }
 }
